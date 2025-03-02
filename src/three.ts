@@ -20,6 +20,7 @@ export class Scene {
 
     this.init();
     this.animate();
+    this.addObjects();
   }
 
   private init(): void {
@@ -29,7 +30,17 @@ export class Scene {
     );
     this.container.appendChild(this.renderer.domElement);
 
+    this.camera.position.z = 5;
+
     window.addEventListener("resize", this.onWindowResize.bind(this));
+  }
+
+  private addObjects(): void {
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(2, 2, 2),
+      new THREE.MeshBasicMaterial({ color: 0xffffff })
+    );
+    this.scene.add(mesh);
   }
 
   private animate(): void {
