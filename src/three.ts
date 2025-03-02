@@ -27,7 +27,7 @@ export class Scene {
     this.init();
     this.animate();
     this.addObjects();
-    this.initPostProcessing();
+    // this.initPostProcessing();
   }
 
   private init(): void {
@@ -39,14 +39,14 @@ export class Scene {
 
     this.camera.position.z = 5;
 
-    // this.renderer.setSize(
-    //   this.container.clientWidth,
-    //   this.container.clientHeight
-    // );
-    this.composer.setSize(
+    this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
     );
+    // this.composer.setSize(
+    //   this.container.clientWidth,
+    //   this.container.clientHeight
+    // );
 
     window.addEventListener("resize", this.onWindowResize.bind(this));
   }
@@ -60,8 +60,8 @@ export class Scene {
   }
 
   private animate(): void {
-    // this.renderer.render(this.scene, this.camera);
-    this.composer.render();
+    this.renderer.render(this.scene, this.camera);
+    // this.composer.render();
 
     requestAnimationFrame(this.animate.bind(this));
   }
@@ -70,14 +70,14 @@ export class Scene {
     this.camera.aspect =
       this.container.clientWidth / this.container.clientHeight;
     this.camera.updateProjectionMatrix();
-    // this.renderer.setSize(
-    //   this.container.clientWidth,
-    //   this.container.clientHeight
-    // );
-    this.composer.setSize(
+    this.renderer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
     );
+    // this.composer.setSize(
+    //   this.container.clientWidth,
+    //   this.container.clientHeight
+    // );
   }
 
   private initPostProcessing(): void {
