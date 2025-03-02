@@ -1,10 +1,15 @@
 import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
 
 export class Scene {
   private container: HTMLElement;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
+  private composer: EffectComposer;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -17,10 +22,12 @@ export class Scene {
       1000
     );
     this.renderer = new THREE.WebGLRenderer();
+    this.composer = new EffectComposer(this.renderer);
 
     this.init();
     this.animate();
     this.addObjects();
+    this.initPostProcessing();
   }
 
   private init(): void {
@@ -31,6 +38,15 @@ export class Scene {
     this.container.appendChild(this.renderer.domElement);
 
     this.camera.position.z = 5;
+
+    // this.renderer.setSize(
+    //   this.container.clientWidth,
+    //   this.container.clientHeight
+    // );
+    this.composer.setSize(
+      this.container.clientWidth,
+      this.container.clientHeight
+    );
 
     window.addEventListener("resize", this.onWindowResize.bind(this));
   }
@@ -44,7 +60,8 @@ export class Scene {
   }
 
   private animate(): void {
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.composer.render();
 
     requestAnimationFrame(this.animate.bind(this));
   }
@@ -53,9 +70,24 @@ export class Scene {
     this.camera.aspect =
       this.container.clientWidth / this.container.clientHeight;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(
+    // this.renderer.setSize(
+    //   this.container.clientWidth,
+    //   this.container.clientHeight
+    // );
+    this.composer.setSize(
       this.container.clientWidth,
       this.container.clientHeight
     );
+  }
+
+  private initPostProcessing(): void {
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+
+    const glitchPass = new GlitchPass();
+    this.composer.addPass(glitchPass);
+
+    const outputPass = new OutputPass();
+    this.composer.addPass(outputPass);
   }
 }
