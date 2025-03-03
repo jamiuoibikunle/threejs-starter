@@ -3,6 +3,7 @@ import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
 import { GlitchPass } from "three/addons/postprocessing/GlitchPass.js";
 import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+import { OrbitControls } from "three/examples/jsm/Addons.js";
 
 export class Scene {
   private container: HTMLElement;
@@ -10,6 +11,7 @@ export class Scene {
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private composer: EffectComposer;
+  private controls: OrbitControls;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -23,6 +25,7 @@ export class Scene {
     );
     this.renderer = new THREE.WebGLRenderer();
     this.composer = new EffectComposer(this.renderer);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
     this.init();
     this.animate();
@@ -38,6 +41,7 @@ export class Scene {
     this.container.appendChild(this.renderer.domElement);
 
     this.camera.position.z = 5;
+    this.controls.update();
 
     this.renderer.setSize(
       this.container.clientWidth,
@@ -62,6 +66,8 @@ export class Scene {
   private animate(): void {
     this.renderer.render(this.scene, this.camera);
     // this.composer.render();
+
+    this.controls.update();
 
     requestAnimationFrame(this.animate.bind(this));
   }
